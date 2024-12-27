@@ -1,0 +1,6 @@
+.slide {
+    position: relative;
+    border: 1px solid #dadce0;
+    background-position: center;
+    background-size: cover;
+}

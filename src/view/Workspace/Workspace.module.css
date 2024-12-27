@@ -1,0 +1,12 @@
+.workspace {
+    padding-left: 130px;
+    padding-top: 35px; 
+    width: 100%;
+    background-color: #ffffff;
+    -webkit-box-shadow: 4px 10px 10px 1px rgba(0, 0, 0, 0.3) inset;
+    -moz-box-shadow: 4px 10px 10px 1px rgba(85, 97, 105, 0.3) inset;
+    box-shadow: 4px 10px 10px 1px rgba(85, 97, 105, 0.3) inset;
+}
+.none{
+    background-color: #ffffff;
+}

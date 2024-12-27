@@ -1,0 +1,19 @@
+.slideList{
+    background-color: #edf1d5;
+    height: 100%;
+    width: 100%;
+    max-width: 192px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-box-shadow: 3px 4px 8px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 3px 4px 8px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 4px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.drop_area{
+    transition: all 0.2s ease-in-out;
+}
+
+.hide_drop{
+    transition: all 0.2s ease-in-out;
+}

@@ -1,0 +1,18 @@
+#root {
+    max-width: 1980px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  :root {
+    --topPanelHeight: 70px;
+  }
+  
+  .container {
+    background-color: #FFFFFF;
+    display: flex;
+    height: calc(100vh - var(--topPanelHeight) - 20px);
+  }
+  

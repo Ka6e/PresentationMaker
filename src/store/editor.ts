@@ -1,16 +1,19 @@
 import { editor } from "./data.ts"
+import { loadlFromLocaleStorage, saveToLocaleStorage } from "./localeStorage/localeStorage.ts"
 
-let _editor = editor
+let _editor = loadlFromLocaleStorage() || editor; 
 let _handler = null //: Function | null = null 
 
 function getEditor() 
 {
+    loadlFromLocaleStorage();
     return _editor
 }
 
 function setEditor(newEditor: any) 
 {
     _editor = newEditor
+    saveToLocaleStorage(_editor);
 }
 
 function dispatch(modifyFn: Function, payload?: Object): void 

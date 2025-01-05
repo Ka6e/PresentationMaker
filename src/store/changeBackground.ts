@@ -26,6 +26,8 @@ function setColor(editor: EditorType, color: string): EditorType{
 function setImage(editor: EditorType, image: string): EditorType{
     const selectedSlideId = editor.selection?.selectedSlideId;
 
+    
+
     const updatedSlides = editor.presentation.slides.map( slide =>
             slide.id ===selectedSlideId
             ? {...slide, 

@@ -2,10 +2,13 @@ import {SlideType} from "../../store/PresentationType.ts";
 import {TextObject} from "./TextObject.tsx";
 import {ImageObject} from "./ImageObject.tsx";
 import styles from './Slide.module.css'
-import {CSSProperties,  useRef, useState} from "react";
+import {CSSProperties} from "react";
 import { dispatch } from "../../store/editor.ts";
 import { SelectionType } from "../../store/EditorType.ts";
 import { setSelection } from "../../store/setSelection.ts";
+import {UseDragAndDrop} from "./useDragAndDrop.ts"
+import { useResizeElement } from "./useResize.ts";
+// import { editor } from "../../store/data.ts";
 
 
 
@@ -18,34 +21,28 @@ type SlideProps = {
     isSelected: boolean,
     className: string,
     selectedElementId: string | null,
-    selection?: SelectionType
+    selection?: SelectionType,
+    showResizeHandles?: boolean
 }
 
-function Slide({slide, scale = 1, isSelected, className, selectedElementId}: SlideProps) {
-    
-    const elementRefs = useRef<Record<string, HTMLDivElement | null>>({});
-    // const [pos, setPos] = useState({x:0, y:0});
+function Slide({slide, scale = 1, isSelected, className, selectedElementId, showResizeHandles = true}: SlideProps) {
+
+    const { handleElementMD, handleElementMM, handleElementMU } = UseDragAndDrop({ slideId: slide?.id ?? ''});
+    const { isResizing, handleResizeMD, handleResizeMM, handleResizeMU} = useResizeElement({ slideId: slide?.id ?? ''});
 
     function onObjectClick(objectId: string): void{
-        if(elementRefs.current){
-            const element = elementRefs.current[objectId];
-            if (element) {
-                const rect = element.getBoundingClientRect();
-                console.log("Координаты элемента:", {
-                    top: rect.top,
-                    left: rect.left,
-                    width: rect.width,
-                    height: rect.height,
-                });
-        }
-        
         dispatch(setSelection, {
             selectedSlideId: slide?.id,
             selectedElementId: objectId,
-        });
-        }
+        })
     }
 
+    const handleElementBlur = () => {
+        dispatch(setSelection, {
+            selectedSlideId: slide?.id,
+            selectedElementId: null,
+        });
+    };
 
     if (!slide) {
         return null;
@@ -56,43 +53,93 @@ function Slide({slide, scale = 1, isSelected, className, selectedElementId}: Sli
         backgroundImage: slide.background.type == 'img' ? `url(${slide.background.src})`: 'none',
         width: `${SLIDE_WIDTH * scale}px`,
         height: `${SLIDE_HEIGHT * scale}px`,
+        position: 'relative',
     }
     if (isSelected) {
         slideStyles.border = '3px solid #0b57d0'
     }
     return (
-        <div style={slideStyles} className={styles.slide + ' ' + className}>
-            {slide.objects.map(slideObject => {
-                switch (slideObject.type) {
-                    case "text": 
-                        return <div 
-                        key={slideObject.id}
-                        onClick={() => onObjectClick(slideObject.id)}
-                        ref={(el) => (elementRefs.current[slideObject.id] = el)}
-                        >
-                            <TextObject
-                                    key={slideObject.id} 
-                                    textObject={slideObject} 
-                                    scale={scale} 
-                                    isSelected={slideObject.id == selectedElementId}></TextObject>
-                                </div>
-                    case "image":
-                        return <div 
-                        key={slideObject.id}  
-                        onClick={() => onObjectClick(slideObject.id)}
-                        ref={(el) => (elementRefs.current[slideObject.id] = el)}> 
-                                    <ImageObject
-                                    key={slideObject.id} 
-                                    imageObject={slideObject} 
-                                    scale={scale} 
-                                    isSelected={slideObject.id == selectedElementId}/>
-                                </div>
-                    default:
-                        throw new Error(`Unknown slide type: ${slideObject}`)
+        <div
+            style={slideStyles}
+            className={`${styles.slide} ${className}`}
+            onMouseMove={(event) => {
+                if (isResizing) {
+                    handleResizeMM(event);
+                } else {
+                    handleElementMM(event);
                 }
+            }}
+            onMouseUp={() => {
+                handleElementMU();
+                handleResizeMU();
+            }}
+            onClick={handleElementBlur}>
+            {slide.objects.map(SlideElement => {
+                const isSelectionElem = SlideElement.id === selectedElementId;
+                return (
+                    <div
+                        key={SlideElement.id}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onObjectClick(SlideElement.id);
+                        }}
+                        onMouseDown={(e) => handleElementMD(e, SlideElement.id)}
+                        style={{ position: 'relative' }}>
+                        {SlideElement.type === "text" && (
+                            <TextObject
+                                textObject={SlideElement}
+                                scale={scale}
+                                isSelected={isSelectionElem}
+                            />
+                        )}
+                        {SlideElement.type === "image" && (
+                            <ImageObject
+                                imageObject={SlideElement}
+                                scale={scale}
+                                isSelected={isSelectionElem}
+                            />
+                        )}
+                        {isSelectionElem && showResizeHandles && (
+                            <>
+                                <div className={`${styles.resizeHandle} ${styles.topLeft}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'top-left')}
+                                style={{position: 'absolute', top: SlideElement.y - 5, left: SlideElement.x - 5}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.topRight}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'top-right')}
+                                style={{position: 'absolute', top: SlideElement.y - 5, left: SlideElement.x + SlideElement.width - 3}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.bottomLeft}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'bottom-left')}
+                                style={{position: 'absolute', top: SlideElement.y + SlideElement.height - 3, left: SlideElement.x - 6}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.bottomRight}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'bottom-right')}
+                                style={{position: 'absolute', top: SlideElement.y + SlideElement.height - 3, left: SlideElement.x + SlideElement.width - 3}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.middleLeft}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'middle-left')}
+                                style={{position: 'absolute', top: SlideElement.y + SlideElement.height / 2, left: SlideElement.x - 6}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.middleRight}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'middle-right')}
+                                style={{position: 'absolute', top: SlideElement.y + SlideElement.height / 2, left: SlideElement.x + SlideElement.width - 3}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.middleTop}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'middle-top')}
+                                style={{position: 'absolute', top: SlideElement.y - 5, left: SlideElement.x + SlideElement.width / 2}}/>
+
+                                <div className={`${styles.resizeHandle} ${styles.middleBottom}`}
+                                onMouseDown={(event) => handleResizeMD(event, SlideElement.id, 'middle-bottom')}
+                                style={{position: 'absolute', top: SlideElement.y + SlideElement.height - 3, left: SlideElement.x + SlideElement.width / 2}}/>
+                            </>
+                            )}
+                    </div>
+                );
             })}
         </div>
-    )
+    );
+    
 }
 
 export {

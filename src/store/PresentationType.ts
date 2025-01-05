@@ -32,8 +32,8 @@ type BaseSlideObject = {
 }
 
 type TextObjectType = BaseSlideObject & {
+    value: string,
     type: 'text',
-    text: string,
     fontFamily: string,
     fontSize: number,
     color: string,
@@ -51,4 +51,5 @@ export type{
     ImageObjectType,
     SlideObject,
     Background,
+    BaseSlideObject,
 }

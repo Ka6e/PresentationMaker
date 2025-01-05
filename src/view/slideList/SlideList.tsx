@@ -1,11 +1,12 @@
-import {SlideType} from "../store/PresentationType.ts";
-import {Slide} from './slide/Slide.tsx'
+import {SlideType} from "../../store/PresentationType.ts";
+import {Slide} from '../slide/Slide.tsx'
 import styles from './SlideList.module.css'
-import {SelectionType} from "../store/EditorType.ts";
-import {dispatch} from "../store/editor.ts";
-import {setSelection} from "../store/setSelection.ts";
+import {SelectionType} from "../../store/EditorType.ts";
+import {dispatch} from "../../store/editor.ts";
+import {setSelection} from "../../store/setSelection.ts";
 import { useState } from "react";
-import { Swap } from "../store/Dnd.ts";
+import { swap } from "../../store/Dnd.ts";
+
 
 const SLIDE_PREVIEW_SCALE = 0.2
 
@@ -26,7 +27,7 @@ function SlidesList({slides, selection }: SlidesListPros) {
     const handeDrop = (e: React.DragEvent, targetSlideId: string) => {
         e.preventDefault();
         if(draggedSlideId && draggedSlideId != targetSlideId){
-            dispatch(Swap, {draggedSlideId,targetSlideId});
+            dispatch(swap, {draggedSlideId,targetSlideId});
             setdraggedSlide(null);
         }
     }

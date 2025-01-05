@@ -63,6 +63,7 @@ function addImage(editor: EditorType, newElement: string): EditorType{
     };
 }
 
+
 const newText:SlideObject= {
     id: uuidv4(),
     x: 100,
@@ -70,12 +71,11 @@ const newText:SlideObject= {
     width: 60,
     height: 24,
     type:'text',
-    text: 'Example',
+    value: 'новый текст',
     fontFamily: 'Arial',
     fontSize: 16,
     color: 'black',    
 }
-
 
 
 export { addText,  addImage, newText}

@@ -1,7 +1,7 @@
 import { EditorType } from "../EditorType";
+import { validate } from "./validation";
 
 function exportToFile(editor: EditorType): void{
-        // Преобразуем данные редактора в JSON строку
         const dataStr = JSON.stringify(editor, null, 2);
     
         // Создаем новый объект Blob с типом MIME application/json
@@ -45,6 +45,27 @@ function importFromFile(file: File): Promise<EditorType>{
         reader.readAsText(file);
     });
 }
+
+export function importEditor(editor: EditorType, jsonString: string): EditorType {
+
+    if (typeof jsonString === 'string') {
+      try {
+        const importedState: EditorType = JSON.parse(jsonString);
+        if (validate(importedState)) {
+          console.log('Импортирован и прошел валидацию:', importedState);
+          return importedState;
+        } else {
+          alert('editor state не прошел валидацию.');
+          console.  error(validate.errors);
+          return editor;
+        }
+      } catch (error) {
+        console.error('Ошибка при парсинге JSON:', error);
+        return editor;
+      }
+    } else { return editor }
+  
+  }
 
 export {
     exportToFile,

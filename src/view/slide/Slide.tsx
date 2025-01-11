@@ -3,11 +3,11 @@ import {TextObject} from "./TextObject.tsx";
 import {ImageObject} from "./ImageObject.tsx";
 import styles from './Slide.module.css'
 import {CSSProperties} from "react";
-import { dispatch } from "../../store/editor.ts";
 import { SelectionType } from "../../store/EditorType.ts";
-import { setSelection } from "../../store/setSelection.ts";
 import {UseDragAndDrop} from "./useDragAndDrop.ts"
 import { useResizeElement } from "./useResize.ts";
+import { setSelectionAction } from "../../store/redux/actions/presentationActions.ts";
+import { useDispatch } from "react-redux";
 // import { editor } from "../../store/data.ts";
 
 
@@ -27,21 +27,25 @@ type SlideProps = {
 
 function Slide({slide, scale = 1, isSelected, className, selectedElementId, showResizeHandles = true}: SlideProps) {
 
+    const appDispatch = useDispatch();
+
     const { handleElementMD, handleElementMM, handleElementMU } = UseDragAndDrop({ slideId: slide?.id ?? ''});
     const { isResizing, handleResizeMD, handleResizeMM, handleResizeMU} = useResizeElement({ slideId: slide?.id ?? ''});
 
     function onObjectClick(objectId: string): void{
-        dispatch(setSelection, {
-            selectedSlideId: slide?.id,
+        const selection: SelectionType = {
+            selectedSlideId: slide?.id || null,
             selectedElementId: objectId,
-        })
+        }
+        appDispatch(setSelectionAction(selection));
     }
 
     const handleElementBlur = () => {
-        dispatch(setSelection, {
-            selectedSlideId: slide?.id,
+        const selection: SelectionType = {
+            selectedSlideId: slide?.id || null,
             selectedElementId: null,
-        });
+        }
+        appDispatch(setSelectionAction(selection));
     };
 
     if (!slide) {

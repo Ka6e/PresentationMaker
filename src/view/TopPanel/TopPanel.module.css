@@ -28,6 +28,12 @@
     margin: 0 5px;
 }
 
+.buttons{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .buttonApply{
     font-size: 14px;
     background-color: #e9d2b6;
@@ -41,9 +47,31 @@
 
 .colorPicker{
     position: absolute;
-    right: 630px;
     top: 55px;
     opacity: 0;    
 }
 
+.apply{
+    font-size: 14px;
+    background-color: #e9d2b6;
+    background-size: 300% 300%;
+    -webkit-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+    position: absolute;
+}
 
+.slidesActions{
+
+}
+
+.elementActions{
+
+}
+
+.colorPallete{
+    position: absolute;
+    opacity: 0;
+    top: 65px;
+    right: 710px
+}

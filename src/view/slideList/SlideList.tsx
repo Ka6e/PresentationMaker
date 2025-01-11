@@ -1,11 +1,13 @@
 import {SlideType} from "../../store/PresentationType.ts";
 import {Slide} from '../slide/Slide.tsx'
 import styles from './SlideList.module.css'
-import {SelectionType} from "../../store/EditorType.ts";
-import {dispatch} from "../../store/editor.ts";
-import {setSelection} from "../../store/setSelection.ts";
+import {EditorType, SelectionType} from "../../store/EditorType.ts";
 import { useState } from "react";
 import { swap } from "../../store/Dnd.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { updateSlideAction } from "../../store/redux/actions/SlideActions.ts";
+import { setSelectionAction } from "../../store/redux/actions/presentationActions.ts";
+// import { editor } from "../../store/data.ts";
 
 
 const SLIDE_PREVIEW_SCALE = 0.2
@@ -17,8 +19,10 @@ type SlidesListPros = {
 
 function SlidesList({slides, selection }: SlidesListPros) {
 
-    
+    const appDispath = useDispatch();
+    const editor = useSelector((state: EditorType) => state);
     const [draggedSlideId, setdraggedSlide] = useState<string | null>(null);
+
 
     const handleDragStart = (slideId: string) => {
         setdraggedSlide(slideId);
@@ -26,8 +30,11 @@ function SlidesList({slides, selection }: SlidesListPros) {
 
     const handeDrop = (e: React.DragEvent, targetSlideId: string) => {
         e.preventDefault();
+        
         if(draggedSlideId && draggedSlideId != targetSlideId){
-            dispatch(swap, {draggedSlideId,targetSlideId});
+            
+            const updatedSlides = swap(editor, { draggedSlideId, targetSlideId });
+            appDispath(updateSlideAction(updatedSlides.presentation.slides));
             setdraggedSlide(null);
         }
     }
@@ -35,7 +42,11 @@ function SlidesList({slides, selection }: SlidesListPros) {
         e.preventDefault();
     }
     function onSlideClick(slideId: string) {
-        dispatch(setSelection, {selectedSlideId: slideId})
+        const selection: SelectionType = {
+            selectedSlideId: slideId,
+            selectedElementId: null,
+        }
+        appDispath(setSelectionAction(selection))
     }
     return (
         <div className={styles.slideList}>

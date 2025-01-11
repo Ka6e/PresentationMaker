@@ -1,5 +1,4 @@
 import { UnknownAction } from "redux";
-import { renamePresentationTitle } from "../../renamePresentationTitle";
 import { PresentationActionType} from "../actions/presentationActions";
 import { EditorType } from "../../EditorType";
 import { SelectionType } from "../../EditorType"
@@ -12,7 +11,14 @@ const presentationReducer = (state: EditorType, action: UnknownAction): EditorTy
             return setSelection(state, action.payload as SelectionType);
         }
         case PresentationActionType.RENAME_PRESENTATION: {
-            return renamePresentationTitle(state, action.payload as string);
+            const newTitle = typeof action.payload === 'string' ? action.payload.trim() : '';
+            return {
+                ...state,
+                presentation: {
+                    ...state.presentation,
+                    title: newTitle ? newTitle : 'Новая презентация', 
+                },
+            }
         }
         default:
             return state;

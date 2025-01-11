@@ -23,7 +23,7 @@ function TextObject({textObject, scale = 1, isSelected}: TextObjectProps) {
         fontSize: `${textObject.fontSize * scale}px`,
         color: `${textObject.color}`,
         margin: `0`,
-        border: isSelected ? '3px solid #0b57d0' : 'none',
+        border: isSelected ? '2px solid #0b57d0' : 'none',
     }
 
     const inputStyles: CSSProperties = {

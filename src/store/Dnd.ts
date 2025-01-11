@@ -10,12 +10,11 @@ function swap(editor: EditorType, payload: {draggedSlideId: string, targetSlideI
     if (draggedSlideIndex !== -1 && targetSlideIndex !== -1) {
         const [removedSlide] = slides.splice(draggedSlideIndex, 1); 
         slides.splice(targetSlideIndex, 0, removedSlide); 
-
         return {
             ...editor,
             presentation: {
                 ...editor.presentation,
-                slides: slides,
+                slides:slides,
             },
         }
     }

@@ -1,9 +1,9 @@
 // import { editor } from "./data";
 import { EditorType } from "./EditorType";
-import { SlideObject} from "./PresentationType";
+import { SlideObject, TextObjectType} from "./PresentationType";
 import { v4 as uuidv4 } from 'uuid';
 
-function addText(editor: EditorType, newElement: SlideObject): EditorType {
+function addText(editor: EditorType, newElement: TextObjectType): EditorType {
     const selectedSlide = editor.selection?.selectedSlideId;
 
     if(!selectedSlide){
@@ -24,6 +24,19 @@ function addText(editor: EditorType, newElement: SlideObject): EditorType {
             slides:updatedSlides,
         },
     };
+}
+
+const newText:TextObjectType= {
+    id: uuidv4(),
+    x: 100,
+    y: 100,
+    width: 100,
+    height: 24,
+    type:'text',
+    value: 'новый текст',
+    fontFamily: 'Arial',
+    fontSize: 16,
+    color: 'black',    
 }
 
 function addImage(editor: EditorType, newElement: string): EditorType{
@@ -64,18 +77,7 @@ function addImage(editor: EditorType, newElement: string): EditorType{
 }
 
 
-const newText:SlideObject= {
-    id: uuidv4(),
-    x: 100,
-    y: 100,
-    width: 60,
-    height: 24,
-    type:'text',
-    value: 'новый текст',
-    fontFamily: 'Arial',
-    fontSize: 16,
-    color: 'black',    
-}
+
 
 
 export { addText,  addImage, newText}

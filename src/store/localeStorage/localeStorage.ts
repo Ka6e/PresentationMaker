@@ -5,7 +5,7 @@ function saveToLocaleStorage(editor: EditorType): void {
     try {
         const isValid = validate(editor);
         if (!isValid) {
-            console.error('Validation failed:', validate.errors);  // Добавьте вывод ошибок
+            console.error('Validation failed:', validate.errors);  
             throw new Error('Invalid data');
         }
         const editorJSON = JSON.stringify(editor);
@@ -25,7 +25,7 @@ function loadlFromLocaleStorage(): EditorType | null {
         const parsedEditor = JSON.parse(editorJSON) as EditorType;
         const isValid = validate(parsedEditor);
         if (!isValid) {
-            console.error('Validation failed:', validate.errors);  // Добавьте вывод ошибок
+            console.error('Validation failed:', validate.errors); 
             throw new Error('Invalid data');
         }
 
@@ -35,6 +35,9 @@ function loadlFromLocaleStorage(): EditorType | null {
         return null;
     }
 }
+
+
+
 
 export {
     saveToLocaleStorage,

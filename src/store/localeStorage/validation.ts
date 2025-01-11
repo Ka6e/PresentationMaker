@@ -13,7 +13,7 @@ const elementSchema = {
         width: {type: "number"},
         height: {type: "number"},
 
-        text: {type: "string"},
+        value: {type: "string"},
         fontFamily: {type: "string"},
         fontSize: {type: "number"},
         color: {type: "string"},

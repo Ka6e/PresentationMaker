@@ -1,26 +1,22 @@
-import {SlideType} from "../../store/PresentationType.ts";
 import {Slide} from '../slide/Slide.tsx'
 import styles from './SlideList.module.css'
-import {EditorType, SelectionType} from "../../store/EditorType.ts";
+import { SelectionType} from "../../store/functions/EditorType.ts";
 import { useState } from "react";
-import { swap } from "../../store/Dnd.ts";
-import { useDispatch, useSelector } from "react-redux";
+import { swap } from "../../store/functions/Dnd.ts";
+import { useDispatch } from "react-redux";
 import { updateSlideAction } from "../../store/redux/actions/SlideActions.ts";
 import { setSelectionAction } from "../../store/redux/actions/presentationActions.ts";
-// import { editor } from "../../store/data.ts";
+import { useAppSelector } from '../hooks/useAppSelector.ts';
 
 
 const SLIDE_PREVIEW_SCALE = 0.2
 
-type SlidesListPros = {
-    slides: Array<SlideType>,
-    selection: SelectionType,
-}
 
-function SlidesList({slides, selection }: SlidesListPros) {
+function SlidesList() {
 
     const appDispath = useDispatch();
-    const editor = useSelector((state: EditorType) => state);
+    const Slides = useAppSelector(state => state.current.presentation.slides);
+    const selection = useAppSelector(state => state.current.selection);
     const [draggedSlideId, setdraggedSlide] = useState<string | null>(null);
 
 
@@ -33,8 +29,8 @@ function SlidesList({slides, selection }: SlidesListPros) {
         
         if(draggedSlideId && draggedSlideId != targetSlideId){
             
-            const updatedSlides = swap(editor, { draggedSlideId, targetSlideId });
-            appDispath(updateSlideAction(updatedSlides.presentation.slides));
+            const updatedSlides = swap(Slides, { draggedSlideId, targetSlideId });
+            appDispath(updateSlideAction(updatedSlides));
             setdraggedSlide(null);
         }
     }
@@ -50,7 +46,7 @@ function SlidesList({slides, selection }: SlidesListPros) {
     }
     return (
         <div className={styles.slideList}>
-            {slides.map(slide =>
+            {Slides.map(slide =>
                     <div 
                         key={slide.id}
                         draggable
@@ -65,6 +61,7 @@ function SlidesList({slides, selection }: SlidesListPros) {
                             isSelected={selection ? slide.id == selection.selectedSlideId : false}
                             className={styles.item}
                             selectedElementId={selection?.selectedElementId}
+                            showResizeHandles={false}
                         ></Slide>
                     </div>
             )}

@@ -1,16 +1,13 @@
-import {SlideType} from "../../store/PresentationType.ts";
-import {TextObject} from "./TextObject.tsx";
-import {ImageObject} from "./ImageObject.tsx";
+import {SlideType} from "../../store/functions/PresentationType.ts";
+import {TextObject} from "./Elements/TextObject.tsx";
+import {ImageObject} from "./Elements/ImageObject.tsx";
 import styles from './Slide.module.css'
 import {CSSProperties} from "react";
-import { SelectionType } from "../../store/EditorType.ts";
-import {UseDragAndDrop} from "./useDragAndDrop.ts"
-import { useResizeElement } from "./useResize.ts";
+import { SelectionType } from "../../store/functions/EditorType.ts";
+import {useDragAndDrop} from "../hooks/useDND.ts"
+import { useResizeElement } from "../hooks/useResize.ts";
 import { setSelectionAction } from "../../store/redux/actions/presentationActions.ts";
 import { useDispatch } from "react-redux";
-// import { editor } from "../../store/data.ts";
-
-
 
 const SLIDE_WIDTH = 935
 const SLIDE_HEIGHT = 525
@@ -29,7 +26,7 @@ function Slide({slide, scale = 1, isSelected, className, selectedElementId, show
 
     const appDispatch = useDispatch();
 
-    const { handleElementMD, handleElementMM, handleElementMU } = UseDragAndDrop({ slideId: slide?.id ?? ''});
+    const { isDragging, handleElementMD, handleElementMM, handleElementMU } = useDragAndDrop({ slideId: slide?.id ?? ''});
     const { isResizing, handleResizeMD, handleResizeMM, handleResizeMU} = useResizeElement({ slideId: slide?.id ?? ''});
 
     function onObjectClick(objectId: string): void{
@@ -69,7 +66,7 @@ function Slide({slide, scale = 1, isSelected, className, selectedElementId, show
             onMouseMove={(event) => {
                 if (isResizing) {
                     handleResizeMM(event);
-                } else {
+                } else if (isDragging) {
                     handleElementMM(event);
                 }
             }}

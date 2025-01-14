@@ -1,5 +1,5 @@
 import { validate } from "./validation";
-import { EditorType } from "../EditorType";
+import { EditorType } from "../functions/EditorType";
 
 function saveToLocaleStorage(editor: EditorType): void {
     try {

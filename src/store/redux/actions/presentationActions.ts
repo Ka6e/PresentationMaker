@@ -1,4 +1,4 @@
-import { SelectionType } from "../../EditorType"
+import { SelectionType } from "../../functions/EditorType"
 
 enum PresentationActionType  {
     SET_SELECTION = 'SET_SELECTION',

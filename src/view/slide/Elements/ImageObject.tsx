@@ -1,4 +1,4 @@
-import {ImageObjectType} from "../../store/PresentationType.ts";
+import {ImageObjectType} from "../../../store/functions/PresentationType.ts";
 import {CSSProperties} from "react";
 
 type ImageObjectProps = {

@@ -1,25 +1,51 @@
+import { EditorType } from "../../functions/EditorType"
+
 enum EditorActions {
     IMPORT = 'IMPORT',
-    EXPORT = 'EXPORT',
+    SET_EDITOR = 'SET_EDITOR',
+    UNDO = 'UNDO',
+    REDO = 'REDO',
+    SET_IS_CHANGING = 'SET_IS_CHANGING',
+}
 
-
+const setIsChangingAction = (isChanging: boolean) => {
+    return {
+        type: EditorActions.SET_IS_CHANGING,
+        payload: isChanging,
+    }
 }
  
-const importAction = (jsonString: string) => {
+const importAction = (jsonString: EditorType) => {
     return {
         type: EditorActions.IMPORT,
         payload: jsonString,
     }
 }
 
-const exportAсtion = () => {
+const setEditorAction = (newEditor: EditorType) => {
     return {
-        type: EditorActions.EXPORT,
+        type: EditorActions.SET_EDITOR,
+        payload: newEditor,
+    }
+}
+
+const undoAction = () => {
+    return{
+        type:EditorActions.UNDO
+    }
+}
+
+const redoAction = () => {
+    return {
+        type: EditorActions.REDO,
     }
 }
 
 export{
+    setIsChangingAction,
     importAction,
-    exportAсtion,
+    setEditorAction,
+    undoAction,
+    redoAction,
     EditorActions,
 }

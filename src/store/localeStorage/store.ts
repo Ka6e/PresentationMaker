@@ -1,10 +1,24 @@
-
-import { editor } from "../data";
+import { editor } from "../functions/data";
+import { EditorType } from "../functions/EditorType";
 import { rootReducer } from "../redux/reducers/rootReducer";
 import { loadlFromLocaleStorage } from "./localeStorage";
-import { createStore } from 'redux';
+import { legacy_createStore as createStore } from 'redux';
 
-const store = createStore(rootReducer, loadlFromLocaleStorage() || editor);
+export interface HistoryManeger {
+    past: EditorType[];
+    current: EditorType;
+    future: EditorType[];
+    isChanging: boolean;
+}
+
+const preloadedState: HistoryManeger = {
+    past: [],
+    current: loadlFromLocaleStorage() || editor,
+    future: [],
+    isChanging: false,
+}
+
+const store = createStore(rootReducer, preloadedState);
 
 export{
     store,

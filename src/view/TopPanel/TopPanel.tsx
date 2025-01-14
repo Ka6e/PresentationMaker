@@ -1,20 +1,16 @@
 import styles from './TopPanel.module.css'
-import { useSelector } from 'react-redux';
-import { EditorType } from '../../store/EditorType.ts';
 import {ImageButton, TextgeButton} from "../../Button/Button.tsx";
 import React, { useState, useRef } from 'react';
-import { newText } from '../../store/addElement.ts';
-import { exportAсtion } from '../../store/redux/actions/editorActions.ts';
-import { importPresentationFromFile } from '../../store/redux/actions/editorActions.ts';
 import { importFromFile } from '../../store/localeStorage/jsonUtils.ts';
-import { toBase64 } from '../../store/converter.ts';
+import { toBase64 } from '../../store/functions/converter.ts';
 import { useDispatch } from 'react-redux';
 import { addSlideAction, removeSlideAction, changeBackgroundAction, setColorAction } from '../../store/redux/actions/SlideActions.ts'
 import { renamePresentationTitleAction } from '../../store/redux/actions/presentationActions.ts';
-import { addImageAction,addTextAction , removeElementAction, changeColorAction, increaseSizeAction, decreaseSizeAction } from '../../store/redux/actions/elementActions.ts';
-import { importAction } from '../../store/redux/actions/editorActions.ts';
-import { TextObjectType} from '../../store/PresentationType.ts'
-
+import { addImageAction, addTextAction , removeElementAction, changeColorAction, increaseSizeAction, decreaseSizeAction, changeFontFamilyAction } from '../../store/redux/actions/elementActions.ts';
+import { importAction, redoAction, undoAction } from '../../store/redux/actions/editorActions.ts';
+import { exportToFile } from '../../store/localeStorage/jsonUtils.ts';
+import { getEditor } from '../../store/functions/editor.ts';
+import { useAppSelector } from '../hooks/useAppSelector.ts';
 
 import addSlideIcon from '../../../icons/multiple.png'
 import removeSldieIcon from '../../../icons/delete-symbol.png'
@@ -26,13 +22,11 @@ import exportIcon from '../../../icons/export.png'
 import textColor from '../../../icons/textColor.png'
 import increaseText from '../../../icons/increaseSize.png'
 import decreaseText from '../../../icons/decreaseSize.png'
+import undo from '../../../icons/undo.png'
+import redo from '../../../icons/redo.png'
 
 
-type TopPanelProps = {
-    title: string,
-}
-
-function TopPanel({title}: TopPanelProps) {
+function TopPanel() {
     const [isActive, setIsActive] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const colorPicker = useRef<HTMLInputElement | null>(null);
@@ -40,12 +34,24 @@ function TopPanel({title}: TopPanelProps) {
     const [selectedColor, SetColor] = useState<string>("#FFFFFF");
     const presentationFile = useRef<HTMLInputElement | null>(null);
     const colorPallete = useRef<HTMLInputElement | null>(null);
-    // const [isText, setIsText] = useState(false);
 
     const appDispath = useDispatch();
-    const selectedSlide = useSelector((state: EditorType) => state.selection.selectedSlideId);
-    const selectedElement = useSelector((state: EditorType) => state.selection.selectedElementId);
+    const selectedSlide = useAppSelector(state => state.current.selection.selectedSlideId);
+    const selectedElement = useAppSelector(state => state.current.selection.selectedElementId);
+    const title = useAppSelector(state => state.current.presentation.title);
 
+
+    const fonts = ["Arial", "Verdana", "Georgia", "Times New Roman", "Courier New"];
+
+
+    function onChangeFontFamily(event: React.ChangeEvent<HTMLSelectElement>) {
+        const newFontFamily = event.target.value;
+        if (selectedSlide && selectedElement) {
+          appDispath(changeFontFamilyAction(selectedSlide, selectedElement, newFontFamily));
+        } else {
+          alert("Выберите элемент для изменения шрифта.");
+        }
+      }
 
     function TitleChange(event: React.FocusEvent<HTMLInputElement>) {
       
@@ -62,7 +68,7 @@ function TopPanel({title}: TopPanelProps) {
     }
 
     function onAddText() {
-        appDispath(addTextAction(newText));
+        appDispath(addTextAction())
     }
     
     async function onAddImage(event: React.ChangeEvent<HTMLInputElement>){
@@ -117,7 +123,8 @@ function TopPanel({title}: TopPanelProps) {
     }
 
     function exportation(){
-        appDispath(exportAсtion());
+        const editor = getEditor();
+        exportToFile(editor);
     }
 
     function activatePresentationFile(){
@@ -126,37 +133,21 @@ function TopPanel({title}: TopPanelProps) {
         }
     }
 
-    function onImportEditorState() {
-
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = '.json';
-        fileInput.style.display = 'none';
-    
-    
-        fileInput.addEventListener('change', () => {
-          const file = fileInput.files?.[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-              try {
-                const jsonString = reader.result as string;
-                appDispath(importAction(jsonString));
-    
-              } catch (error) {
-                alert('Ошибка при импорте: некорректный JSON файл.');
-                console.error('Error during import:', error);
-              }
-            };
-            reader.onerror = () => {
-              alert('Ошибка чтения файла.');
-              console.error('FileReader error:', reader.error);
-            };
-            reader.readAsText(file);
-          }
-        });
-    
-        fileInput.click();
+    function handlerFileChange(event: React.ChangeEvent<HTMLInputElement>){
+        const file = event.target.files?.[0];
+        if(file){
+            importFromFile(file)
+                .then((parseContent) => {
+                    appDispath(importAction(parseContent))
+                })
+                .catch((error) => {
+                    console.error('Error importing presentation:', error);
+                    alert('Please check the file format.');
+                })
+                .finally(() => {
+                    event.target.value = '';
+                });  
+        }
     }
 
     function activateColorPalette() {
@@ -177,23 +168,14 @@ function TopPanel({title}: TopPanelProps) {
     function onDecreaseTextSize(){
         appDispath(decreaseSizeAction(selectedSlide, selectedElement));
     }
-    // async function handlerFileChange(event: React.ChangeEvent<HTMLInputElement>){
-    //     const file = event.target.files?.[0];
-    //     if(file){
-    //       appDispath(importPresentationAction(file));
-    //     }
-    //     // if(file){
-    //     //     importFromFile(file)
-    //     //     .then((editorData) => {
-    //     //         dispatch(() => (editorData));
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         console.error("Ошибка импорта:", error);
-    //     //     alert("Не удалось загрузить файл");
 
-    //     //     });
-    //     // }
-    // }
+    function onUndo(){
+        appDispath(undoAction());
+    }
+    
+    function onRedo(){
+        appDispath(redoAction());
+    }
 
     return (
         <div className={styles.topPanel}>
@@ -209,22 +191,31 @@ function TopPanel({title}: TopPanelProps) {
                     {isActive && (
                             <TextgeButton className={styles.apply} text={'Apply'} onClick={applyColor}></TextgeButton>
                     )}
+                    <ImageButton className={styles.button} img={undo} onClick={onUndo}></ImageButton>
+                    <ImageButton className={styles.button} img={redo} onClick={onRedo}></ImageButton>
                 </div>
                 <div className={styles.elementActions}>
+                    <select className={styles.FontFamilySelector} onChange={onChangeFontFamily}>
+                        {fonts.map((font) => (
+                            <option key={font} value={font}>
+                                {font}
+                            </option>
+                        ))}
+                    </select>
                     <ImageButton className={styles.button} img={addTextIcon} onClick={onAddText}></ImageButton>
                     <ImageButton className={styles.button} img={increaseText} onClick={onIncreaseTextSize}></ImageButton>
                     <ImageButton className={styles.button} img={decreaseText} onClick={onDecreaseTextSize}></ImageButton>
                     <ImageButton className={styles.button} img={textColor} onClick={activateColorPalette}></ImageButton>
                     <input type="color" className={styles.colorPallete} ref={colorPallete} onChange={onTextColorChange}/>
                     <ImageButton className={styles.button} img={addImageIcon} onClick={activateImageFileInput}></ImageButton>
+                    <input type="file" name="imageElemnt" id="imageElement" accept='.jpeg, .png, .jpg'  onChange={onAddImage} ref={imageFileRef} style={{display: 'none'}}/>
                     <ImageButton className={styles.button} img={removeSldieIcon} onClick={onRemoveElement}></ImageButton>
                 </div>
                 <div className={styles.presentationActions}>
                     <ImageButton className={styles.button} img={exportIcon} onClick={exportation}></ImageButton>
-                    <ImageButton className={styles.button} img={importIcon} onClick={onImportEditorState}></ImageButton>
-                    <input type="file" name="imageElemnt" id="imageElement" accept='.jpeg, .png, .jpg'  onChange={onAddImage} ref={imageFileRef} style={{display: 'none'}}/>
+                    <ImageButton className={styles.button} img={importIcon} onClick={activatePresentationFile}></ImageButton>
+                    <input type="file" name="presentationFile" ref={presentationFile} style={{display: 'none'}} onChange={handlerFileChange}/>
                 </div>
-                {/* <input type="file" name="presentationFile" ref={presentationFile} style={{display: 'none'}} onChange={onImportEditorState}/> */}
             </div>
         </div>
     )

@@ -1,8 +1,8 @@
 import { UnknownAction } from "redux";
 import { PresentationActionType} from "../actions/presentationActions";
-import { EditorType } from "../../EditorType";
-import { SelectionType } from "../../EditorType"
-import { setSelection } from "../../setSelection";
+import { EditorType } from "../../functions/EditorType";
+import { SelectionType } from "../../functions/EditorType"
+import { setSelection } from "../../functions/setSelection";
 
 
 const presentationReducer = (state: EditorType, action: UnknownAction): EditorType => {

@@ -47,7 +47,8 @@
 
 .colorPicker{
     position: absolute;
-    top: 55px;
+    top: 73px;
+    left: 173px;
     opacity: 0;    
 }
 
@@ -66,12 +67,20 @@
 }
 
 .elementActions{
-
+    display: flex;
+    align-items: center;
 }
 
 .colorPallete{
     position: absolute;
     opacity: 0;
-    top: 65px;
-    right: 710px
+    top: 76px;
+    right: 530px
 }
+
+.FontFamilySelector {
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 14px;
+    background-color: #e9d2b6;
+  }

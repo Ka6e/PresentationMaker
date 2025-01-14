@@ -1,4 +1,4 @@
-import {SlideType} from '../../PresentationType'
+import {SlideType} from '../../functions/PresentationType'
 
 enum SlideActionType {
     ADD_SLIDE = 'ADD_SLIDE',

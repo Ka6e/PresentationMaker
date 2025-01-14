@@ -1,4 +1,4 @@
-import {PresentationType} from "./PresentationType.ts";
+import {PresentationType} from "../functions/PresentationType";
 
 type SelectionType = {
     selectedSlideId: string | null,

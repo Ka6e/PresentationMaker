@@ -1,10 +1,10 @@
 import { EditorType} from "./EditorType";
 import { SlideType } from "./PresentationType";
-import { v4 as uuidv4 } from 'uuid'; 
+import { uuidV4 } from './uuidV4'; 
 
 function addSlide(editor: EditorType): EditorType {
     const newSlide: SlideType = {
-        id: uuidv4(),
+        id: uuidV4(),
         objects: [],
         background: {
             type: 'solid',

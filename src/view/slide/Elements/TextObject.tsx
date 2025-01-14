@@ -1,6 +1,5 @@
-import {TextObjectType} from "../../store/PresentationType.ts";
+import {TextObjectType} from "../../../store/functions/PresentationType";
 import {CSSProperties, useState} from "react";
-// import { SelectionType } from "../../store/EditorType.ts";
 
 type TextObjectProps = {
     textObject: TextObjectType,
@@ -21,6 +20,7 @@ function TextObject({textObject, scale = 1, isSelected}: TextObjectProps) {
         width: `${textObject.width * scale}px`,
         height: `${textObject.height * scale}px`,
         fontSize: `${textObject.fontSize * scale}px`,
+        fontFamily: `${textObject.fontFamily}`,
         color: `${textObject.color}`,
         margin: `0`,
         border: isSelected ? '2px solid #0b57d0' : 'none',
@@ -58,7 +58,7 @@ function TextObject({textObject, scale = 1, isSelected}: TextObjectProps) {
             <p onDoubleClick={handleDoubleClick}                     
             style={{
                 ...textObjectStyles,
-                border: isTextEmpty ? '2px dashed red' : textObjectStyles.border, // Если текст пустой, добавляем бордер
+                border: isTextEmpty ? '2px dashed red' : textObjectStyles.border,
             }}>
                 {textValue}
             </p>

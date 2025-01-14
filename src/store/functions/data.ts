@@ -1,6 +1,5 @@
 import {PresentationType, SlideType} from "./PresentationType.ts";
 import {EditorType} from "./EditorType.ts";
-import Image from '../../previewfile_2406870583.jpg'
 
 const slide1: SlideType = {
     id: 'slide-1',

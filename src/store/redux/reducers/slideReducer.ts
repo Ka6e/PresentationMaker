@@ -1,11 +1,11 @@
-import { addSlide } from "../../addSlide";
-import { removeSlide } from "../../removeSlide";
+import { addSlide } from "../../functions/addSlide";
+import { removeSlide } from "../../functions/removeSlide";
 import { UnknownAction } from "redux";
-import {EditorType} from '../../EditorType'
-import {SlideActionType} from '../actions/SlideActions'
-import { setColor, setImage } from "../../changeBackground";
-import { SlideType } from "../../PresentationType";
-import { updatedSlides } from "../../updateSlides";
+import { EditorType } from '../../functions/EditorType'
+import { SlideActionType } from '../actions/SlideActions'
+import { setColor, setImage } from "../../functions/changeBackground";
+import { SlideType } from "../../functions/PresentationType";
+import { updatedSlides } from "../../functions/updateSlides";
 
 
 const slideReducer = (state: EditorType, action: UnknownAction): EditorType => {

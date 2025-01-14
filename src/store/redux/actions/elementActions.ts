@@ -1,15 +1,17 @@
-import * as tool from '../../PresentationType'
+import * as tool from '../../functions/PresentationType'
 
 enum ElementActions {
     REMOVE_ELEMENT = 'REMOVE_ELEMENT',
+    UPDATE_ELEMENT = 'UPDATE_ELEMENT',
     ADD_IMAGE = 'ADD_IMAGE',
     ADD_TEXT = 'ADD_TEXT',
     MOVE_ELEMENT = 'MOVE_ELEMENT',
     CHANGE_FONTFAMILY = 'CHANGE_FONTFAMILY',
     CHANGE_COLOR = 'CHANGE_COLOR',
     INCREASE_SIZE = 'INCREASE_SIZE',
-    DECREASE_SIZE = 'DECREASE_SIZE'
-,}
+    DECREASE_SIZE = 'DECREASE_SIZE',
+}
+
 
 const removeElementAction = () => {
     return {
@@ -17,10 +19,16 @@ const removeElementAction = () => {
     }
 }
 
-const addTextAction = (newText: tool.TextObjectType) => {
+const updateElementAction = (newElement: tool.SlideObject) => {
+    return{
+        type: ElementActions.UPDATE_ELEMENT,
+        payload: newElement,
+    }
+}
+
+const addTextAction = () => {
     return {
         type: ElementActions.ADD_TEXT,
-        payload: newText,
     }
 }
 
@@ -67,8 +75,10 @@ const decreaseSizeAction = (slideId: string, elementId: string) => {
 }
 
 
+
 export {
     changeFontFamilyAction,
+    updateElementAction,
     removeElementAction,
     addTextAction,
     addImageAction,

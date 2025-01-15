@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import {addEditorChangeHandler} from "./store/functions/editor.ts";
 import { Provider } from 'react-redux';
-import { store } from './store/localeStorage/store.ts';
+import { store } from './store/storage/store.ts';
 
 
 

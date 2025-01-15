@@ -13,7 +13,9 @@ export function moveSlideElement(
                     ...slide,
                     elements: slide.objects.map(element =>
                         element.id === elementId ? {
-                            ...element, pos: {ox: newX, oy: newY} 
+                            ...element, 
+                            x: newX, 
+                            y: newY 
                         } : element
                     )
                 } : slide

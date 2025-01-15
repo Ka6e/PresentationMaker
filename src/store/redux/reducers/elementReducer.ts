@@ -2,13 +2,16 @@ import { UnknownAction } from "redux";
 import { ElementActions } from "../actions/elementActions";
 import { EditorType } from "../../functions/EditorType";
 import { addImage, addText } from "../../functions/addElement";
-import { SlideObject, TextObjectType } from "../../functions/PresentationType";
+import { SlideObject } from "../../functions/PresentationType";
 import { deleteElement } from "../../functions/removeElement";
-import { moveSlideElement } from "../../functions/moveSlideElement";
+// import { moveSlideElement } from "../../functions/moveSlideElement";
 import { changeFontFamily } from "../../functions/changeFontFamily";
 import { changeTextColor } from "../../functions/changeTextColor";
 import { decreaseSize, increaseSize } from "../../functions/changeFontSize";
 import { updateElement } from "../../functions/updateElement";
+import { moveSlideElement } from "../../functions/moveSlideElement";
+import { moveElement } from "../../functions/moveElement";
+import { resizeElement } from "../../functions/resizeElement";
 
 
 
@@ -24,8 +27,22 @@ const elementReducer = (state: EditorType, action: UnknownAction): EditorType =>
             return deleteElement(state);
         }
         case ElementActions.MOVE_ELEMENT: {
-            const { slideId, elementId, newX, newY } = action.payload;
-            return moveSlideElement(state, slideId, elementId, newX, newY);
+            const {slideId, elementId, newX, newY} = action.payload;
+            return {
+                ...state,
+                presentation: {
+                    ...state.presentation,
+                    slides: state.presentation.slides.map(slide => 
+                        slide.id === slideId
+                        ? moveElement(slide, elementId, newX, newY)
+                        : slide
+                    )
+                }
+            }        
+        }
+        case ElementActions.RESIZE_ELEMENT: {
+            const {slideId, elementId, newWidth, newHeight, newX, newY} = action.payload;
+            return resizeElement(state, slideId, elementId, newX, newY, newWidth, newHeight);
         }
         case ElementActions.CHANGE_FONTFAMILY: {
             const {slideId, elementId, newFont} = action.payload;

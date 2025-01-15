@@ -1,16 +1,18 @@
 import styles from './TopPanel.module.css'
 import {ImageButton, TextgeButton} from "../../Button/Button.tsx";
 import React, { useState, useRef } from 'react';
-import { importFromFile } from '../../store/localeStorage/jsonUtils.ts';
+import { importFromFile } from '../../store/storage/jsonUtils.ts';
 import { toBase64 } from '../../store/functions/converter.ts';
 import { useDispatch } from 'react-redux';
 import { addSlideAction, removeSlideAction, changeBackgroundAction, setColorAction } from '../../store/redux/actions/SlideActions.ts'
 import { renamePresentationTitleAction } from '../../store/redux/actions/presentationActions.ts';
 import { addImageAction, addTextAction , removeElementAction, changeColorAction, increaseSizeAction, decreaseSizeAction, changeFontFamilyAction } from '../../store/redux/actions/elementActions.ts';
 import { importAction, redoAction, undoAction } from '../../store/redux/actions/editorActions.ts';
-import { exportToFile } from '../../store/localeStorage/jsonUtils.ts';
+import { exportToFile } from '../../store/storage/jsonUtils.ts';
 import { getEditor } from '../../store/functions/editor.ts';
 import { useAppSelector } from '../hooks/useAppSelector.ts';
+import { generatePDF } from '../../store/functions/PDF/createPDF.ts';
+
 
 import addSlideIcon from '../../../icons/multiple.png'
 import removeSldieIcon from '../../../icons/delete-symbol.png'
@@ -24,6 +26,7 @@ import increaseText from '../../../icons/increaseSize.png'
 import decreaseText from '../../../icons/decreaseSize.png'
 import undo from '../../../icons/undo.png'
 import redo from '../../../icons/redo.png'
+import pdf from '../../../icons/pdf.png'
 
 
 function TopPanel() {
@@ -36,9 +39,10 @@ function TopPanel() {
     const colorPallete = useRef<HTMLInputElement | null>(null);
 
     const appDispath = useDispatch();
-    const selectedSlide = useAppSelector(state => state.current.selection.selectedSlideId);
-    const selectedElement = useAppSelector(state => state.current.selection.selectedElementId);
-    const title = useAppSelector(state => state.current.presentation.title);
+    const editor = useAppSelector(state => state);
+    const selectedSlide = editor.current.selection.selectedSlideId;
+    const selectedElement = editor.current.selection.selectedElementId;
+    const title = editor.current.presentation.title;
 
 
     const fonts = ["Arial", "Verdana", "Georgia", "Times New Roman", "Courier New"];
@@ -123,8 +127,7 @@ function TopPanel() {
     }
 
     function exportation(){
-        const editor = getEditor();
-        exportToFile(editor);
+        exportToFile(editor.current);
     }
 
     function activatePresentationFile(){
@@ -177,6 +180,10 @@ function TopPanel() {
         appDispath(redoAction());
     }
 
+    function PDF(){
+        appDispath(generatePDF(editor.current));
+    }
+
     return (
         <div className={styles.topPanel}>
             <input className={styles.title} type="text" maxLength={30} defaultValue={title} onBlur={TitleChange}/>
@@ -215,6 +222,7 @@ function TopPanel() {
                     <ImageButton className={styles.button} img={exportIcon} onClick={exportation}></ImageButton>
                     <ImageButton className={styles.button} img={importIcon} onClick={activatePresentationFile}></ImageButton>
                     <input type="file" name="presentationFile" ref={presentationFile} style={{display: 'none'}} onChange={handlerFileChange}/>
+                    <ImageButton className={styles.button} img={pdf} onClick={PDF}></ImageButton>
                 </div>
             </div>
         </div>

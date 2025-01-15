@@ -2,7 +2,9 @@ import { editor } from "../functions/data";
 import { EditorType } from "../functions/EditorType";
 import { rootReducer } from "../redux/reducers/rootReducer";
 import { loadlFromLocaleStorage } from "./localeStorage";
-import { legacy_createStore as createStore } from 'redux';
+import { applyMiddleware, legacy_createStore as createStore } from 'redux';
+import { thunk, ThunkAction } from "redux-thunk";
+import { UnknownAction } from "redux";
 
 export interface HistoryManeger {
     past: EditorType[];
@@ -11,6 +13,18 @@ export interface HistoryManeger {
     isChanging: boolean;
 }
 
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  HistoryManeger,
+  unknown,
+  UnknownAction
+>;
+
+const loggerMiddleware = (store: any) => (next: any) => (action: any) => {
+    const result = next(action);
+    return result;
+  };
+
 const preloadedState: HistoryManeger = {
     past: [],
     current: loadlFromLocaleStorage() || editor,
@@ -18,7 +32,7 @@ const preloadedState: HistoryManeger = {
     isChanging: false,
 }
 
-const store = createStore(rootReducer, preloadedState);
+const store = createStore(rootReducer, preloadedState, applyMiddleware(thunk, loggerMiddleware));
 
 export{
     store,

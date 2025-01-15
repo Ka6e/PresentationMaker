@@ -12,7 +12,7 @@ const newText = (): TextObjectType => ({
     value: 'новый текст',
     fontFamily: 'Arial',
     fontSize: 16,
-    color: 'black',
+    color: '#000000',
 });
 
 function addText(editor: EditorType): EditorType {

@@ -10,6 +10,7 @@ enum ElementActions {
     CHANGE_COLOR = 'CHANGE_COLOR',
     INCREASE_SIZE = 'INCREASE_SIZE',
     DECREASE_SIZE = 'DECREASE_SIZE',
+    RESIZE_ELEMENT = 'RESIZE_ELEMENT',
 }
 
 
@@ -39,12 +40,19 @@ const addImageAction = (newImage: string) => {
     }
 }
 
-const moveElementAction = (slideId: string, elementId: string, newX: number, newY: number) => {
+const moveElementAction = (slideId: tool.SlideType, elementId: string, newX: number, newY: number) => {
     return {
         type: ElementActions.MOVE_ELEMENT,
         payload: { slideId, elementId, newX, newY },
     }
 };
+
+const resizeElementAction = (slideId: string, elementId: string, newWidth: number, newHeight: number,  newX: number, newY: number) => {
+    return {
+        type: ElementActions.RESIZE_ELEMENT,
+        payload: {slideId, elementId, newWidth, newHeight, newX, newY},
+    }
+}
 
 const changeFontFamilyAction = (slideId: string, elementId: string, newFontFamily: string) => {
     return {
@@ -86,5 +94,6 @@ export {
     changeColorAction,
     increaseSizeAction,
     decreaseSizeAction,
+    resizeElementAction,
     ElementActions,
 }

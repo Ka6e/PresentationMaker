@@ -53,6 +53,9 @@
 }
 
 .apply{
+    position: absolute;
+    top: 355px;
+    width: 115px;
     font-size: 14px;
     background-color: #e9d2b6;
     background-size: 300% 300%;

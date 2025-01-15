@@ -5,8 +5,8 @@ import { editorReducer } from "./editorReducer";
 import { elementReducer } from "./elementReducer";
 // import { initialState } from "../../localeStorage/store";
 import { editor } from "../../functions/data";
-import { saveToLocaleStorage } from "../../localeStorage/localeStorage";
-import { HistoryManeger } from "../../localeStorage/store";
+import { saveToLocaleStorage } from "../../storage/localeStorage";
+import { HistoryManeger } from "../../storage/store";
 import { EditorActions } from "../actions/editorActions";
 
 const rootReducer = (state: HistoryManeger = {past: [], current: editor, future: [], isChanging: false} ,action: UnknownAction): HistoryManeger => {

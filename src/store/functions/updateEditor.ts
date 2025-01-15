@@ -1,4 +1,4 @@
-import { HistoryManeger } from "../localeStorage/store";
+import { HistoryManeger } from "../storage/store";
 import { EditorType } from "./EditorType";
 
 function updateEditor(state: HistoryManeger, newEditor: EditorType): HistoryManeger{

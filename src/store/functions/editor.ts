@@ -1,5 +1,5 @@
 import { editor } from "./data.ts"
-import { loadlFromLocaleStorage, saveToLocaleStorage } from "../localeStorage/localeStorage.ts"
+import { loadlFromLocaleStorage, saveToLocaleStorage } from "../storage/localeStorage.ts"
 
 let _editor = loadlFromLocaleStorage() || editor; 
 let _handler = null //: Function | null = null 

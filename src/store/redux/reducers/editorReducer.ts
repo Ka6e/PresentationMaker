@@ -2,7 +2,7 @@ import { UnknownAction } from "redux";
 import { EditorType } from "../../functions/EditorType";
 import { EditorActions } from "../actions/editorActions";
 import { updateEditor } from "../../functions/updateEditor";
-import { HistoryManeger } from "../../localeStorage/store";
+import { HistoryManeger } from "../../storage/store";
 
 const editorReducer = (state: HistoryManeger, action: UnknownAction): HistoryManeger => {
     switch(action.type){

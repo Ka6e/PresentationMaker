@@ -1,5 +1,8 @@
 import {TextObjectType} from "../../../store/functions/PresentationType";
-import {CSSProperties, useState} from "react";
+import {CSSProperties,  useRef, useState} from "react";
+import { useDispatch } from "react-redux";
+import { updateElementAction } from "../../../store/redux/actions/elementActions";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 type TextObjectProps = {
     textObject: TextObjectType,
@@ -8,6 +11,11 @@ type TextObjectProps = {
 }
 function TextObject({textObject, scale = 1, isSelected}: TextObjectProps) {
 
+    const appDispatch = useDispatch();
+    const textRef = useRef<HTMLInputElement | null>(null);
+    const editor = useAppSelector(state => state);
+    const selectedSlide = editor.current.selection.selectedSlideId;
+    const slide = editor.current.presentation.slides.find(s => s.id === selectedSlide);
     const [isEditing, setIsEditing] = useState(false);
     const [textValue, setTextValue] = useState(() => {
         const storedText = localStorage.getItem(`text_${textObject.id}`);
@@ -35,7 +43,20 @@ function TextObject({textObject, scale = 1, isSelected}: TextObjectProps) {
 
     const handleDoubleClick = () => { setIsEditing(true); };
     
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { setTextValue(e.target.value); };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+        const newValue = e.target.value;
+        setTextValue(newValue);
+
+        if(slide){
+            const updatedElement = {
+                ...textObject,
+                value: newValue,
+            }
+            console.log('updated elem');
+            appDispatch(updateElementAction(slide.id, updatedElement));
+        };
+
+     };
     
     const handleBlur = () => { 
         setIsEditing(false); 
@@ -49,6 +70,7 @@ function TextObject({textObject, scale = 1, isSelected}: TextObjectProps) {
         {isEditing ? (
             <input type="text"
             value={textValue}
+            ref={textRef}
             onChange={handleChange}
             onBlur={handleBlur}
             autoFocus

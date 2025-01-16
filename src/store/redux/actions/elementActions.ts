@@ -20,10 +20,11 @@ const removeElementAction = () => {
     }
 }
 
-const updateElementAction = (newElement: tool.SlideObject) => {
+const updateElementAction = (slideId: string, element: tool.TextObjectType) => {
+    console.log('action');
     return{
         type: ElementActions.UPDATE_ELEMENT,
-        payload: newElement,
+        payload: {slideId, element},
     }
 }
 

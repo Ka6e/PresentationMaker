@@ -2,14 +2,11 @@ import { UnknownAction } from "redux";
 import { ElementActions } from "../actions/elementActions";
 import { EditorType } from "../../functions/EditorType";
 import { addImage, addText } from "../../functions/addElement";
-import { SlideObject } from "../../functions/PresentationType";
 import { deleteElement } from "../../functions/removeElement";
-// import { moveSlideElement } from "../../functions/moveSlideElement";
 import { changeFontFamily } from "../../functions/changeFontFamily";
 import { changeTextColor } from "../../functions/changeTextColor";
 import { decreaseSize, increaseSize } from "../../functions/changeFontSize";
 import { updateElement } from "../../functions/updateElement";
-import { moveSlideElement } from "../../functions/moveSlideElement";
 import { moveElement } from "../../functions/moveElement";
 import { resizeElement } from "../../functions/resizeElement";
 
@@ -101,7 +98,19 @@ const elementReducer = (state: EditorType, action: UnknownAction): EditorType =>
             };
         }
         case ElementActions.UPDATE_ELEMENT: {
-            return updateElement(state, action.payload as SlideObject);
+            console.log('reducer');
+            const {slideId, element} = action.payload;
+            return {
+                ...state,
+                presentation: {
+                    ...state.presentation,
+                    slides: state.presentation.slides.map(slide => 
+                        slide.id === slideId
+                        ? updateElement(slide, element)
+                        : slide
+                    )
+                }
+            };
         }
         default: 
             return state;
